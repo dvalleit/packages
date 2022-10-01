@@ -1,0 +1,16 @@
+name: publish
+
+on:
+  push: main
+  
+job:
+  build:
+    name: exe manual
+    steps: 
+      - action
+      - run: |
+          docker build ./sample-packages/docker/
+          echo $GITHUB_TOKEN | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag ${{ steps.meta.outputs.tags }} ghcr.io/${{ github.actor }}/${{ github.repository }}-docker:latest
+          docker push ghcr.io/${{ github.actor }}/${{ github.repository }}-docker:latest
+      
